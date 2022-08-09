@@ -1,4 +1,4 @@
-import { TerraGraph, TerraGraphType } from 'terra-graphs';
+import { TerraGraph, GraphType } from 'terra-graphs';
 import { BarLoader } from 'react-spinners';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
         {['SLEEP_HR_SUMMARY', 'SLEEP_HRV_SUMMARY', 'SLEEP_ASLEEP_DURATION', 'DAILY_STEPS_SUMMARY'].map((t, i) => (
           <TerraGraph
             key={i}
-            type={t as TerraGraphType}
+            type={t as GraphType}
             token={token}
             test={i === 0}
             className="md:w-1/3 h-[350px] w-full"

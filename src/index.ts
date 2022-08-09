@@ -1,4 +1,4 @@
-import Graph, { GraphType } from './graph';
+import Graph, { GraphType as g } from './graph';
 
 export const TerraGraph = Graph;
-export type TerraGraphType = GraphType;
+export type GraphType = g;
