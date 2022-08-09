@@ -1,0 +1,46 @@
+{
+  "name": "terra-graphs",
+  "version": "1.0.0",
+  "description": "Wrapper for the terra graphs API",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "exit 0",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tryterra/terra-graphs.git"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "keywords": [
+    "Terra",
+    "Health",
+    "Fitness",
+    "Dashboard",
+    "Graphs"
+  ],
+  "author": "JaafarRammal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tryterra/terra-graphs/issues"
+  },
+  "homepage": "https://github.com/tryterra/terra-graphs#readme",
+  "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/styled-components": "^5.1.25",
+    "prettier": "^2.7.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.4"
+  }
+}
