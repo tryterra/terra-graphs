@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 
-export type GraphType = 'SLEEP_HR_SUMMARY' | 'SLEEP_HRV_SUMMARY' | 'SLEEP_ASLEEP_DURATION' | 'DAILY_STEPS_SUMMARY';
+export type GraphType =
+  | 'SLEEP_HR_SUMMARY'
+  | 'SLEEP_HRV_SUMMARY'
+  | 'SLEEP_ASLEEP_DURATION'
+  | 'DAILY_STEPS_SUMMARY'
+  | 'ACTIVITY_HR_SAMPLES'
+  | 'ACTIVITY_POWER_SAMPLES';
 
 function Graph(props: {
   type: GraphType;

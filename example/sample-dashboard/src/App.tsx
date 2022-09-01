@@ -8,7 +8,14 @@ function App() {
     <div className="p-12 bg-sky-100">
       <div className="text-3xl font-bold mb-10">Sample Dashboard</div>
       <div className="flex flex-row flex-wrap justify-start">
-        {['SLEEP_HR_SUMMARY', 'SLEEP_HRV_SUMMARY', 'SLEEP_ASLEEP_DURATION', 'DAILY_STEPS_SUMMARY'].map((t, i) => (
+        {[
+          'SLEEP_HR_SUMMARY',
+          'SLEEP_HRV_SUMMARY',
+          'SLEEP_ASLEEP_DURATION',
+          'DAILY_STEPS_SUMMARY',
+          'ACTIVITY_HR_SAMPLES',
+          'ACTIVITY_POWER_SAMPLES',
+        ].map((t, i) => (
           <TerraGraph
             key={i}
             type={t as GraphType}
