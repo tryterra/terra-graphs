@@ -11,7 +11,7 @@ function App() {
         {[
           'SLEEP_HR_SUMMARY',
           'SLEEP_HRV_SUMMARY',
-          'SLEEP_ASLEEP_DURATION',
+          'SLEEP_ASLEEP_SUMMARY',
           'DAILY_STEPS_SUMMARY',
           'ACTIVITY_HR_SAMPLES',
           'ACTIVITY_POWER_SAMPLES',
@@ -20,8 +20,8 @@ function App() {
             key={i}
             type={t as GraphType}
             token={token}
-            test={i === 0}
-            className="md:w-1/3 h-[350px] w-full"
+            test={true}
+            className="md:w-1/3 h-[400px] w-full"
             loadingComponent={
               <div className="w-full h-full flex flex-col">
                 <div className="m-auto">
