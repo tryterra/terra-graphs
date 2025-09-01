@@ -15,7 +15,7 @@
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.4",
     "terra-graphs": "file:../..",
-    "typescript": "^4.7.4",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
