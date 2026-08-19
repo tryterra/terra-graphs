@@ -1,5 +1,15 @@
 name: Release package
 
+# Publishes via npm trusted publishing (OIDC) — no stored token. Same mechanism
+# as terra-react; see its release_package.yml.
+#
+# Requires a Trusted Publisher registered on npmjs.com for EACH package, all
+# pointing at org `tryterra`, repo `terra-graphs`, workflow
+# `release_package.yml`:
+#     terra-graphs · terra-graphs-react · terra-graphs-react-native
+# Without it npm answers 404 on PUT, which reads as "no such package" but means
+# "this workflow may not publish it".
+
 on:
   workflow_dispatch:
     inputs:
@@ -20,6 +30,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
+      # Mint the OIDC token npm exchanges for a short-lived publish credential.
+      id-token: write
+      # The release commit and tag are pushed from here.
       contents: write
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +41,9 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Install
         run: npm ci
@@ -84,11 +100,10 @@ jobs:
 
       # npm first: it is the step that cannot be undone. Tagging ahead of it
       # once left the repo announcing a release that never reached the registry.
+      # No token: the credential is minted from the id-token permission above.
       - name: Publish
         working-directory: ${{ steps.pkg.outputs.dir }}
         run: npm publish --access public --tag "${RELEASE_TAG}"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPMJS_ACCESS_TOKEN }}
 
       - name: Commit and tag
         run: |
