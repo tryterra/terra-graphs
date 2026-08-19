@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `terra-graphs-react-native` — a `<TerraGraph />` that draws natively via `@wuba/react-native-echarts`, with no WebView. Its ECharts option building is generated verbatim from the web renderer, so the chart is the same one; the header, stats and sleep breakdown are native views.
+- `IsoDate` — `from`/`to` are now typed as `YYYY-MM-DD` rather than `string`, so passing a `Date` is a compile error instead of an off-by-one day east of Greenwich. `toIsoDate(date)` converts one correctly.
+- `<terra-graph>` validates its `from`/`to` attributes and reports a clear error, rather than forwarding a malformed date to the API.
 - `terra-graphs-react` — a React component, `<TerraGraph />`, with typed props, `onLoad` / `onError` callbacks, and no `dynamic()` wrapper needed for server rendering.
 - `<terra-graph>` custom element, so Vue, Svelte, Angular and plain HTML embed a graph without a framework-specific package.
 - `terra-graphs` now exports `loadRenderer`, `fetchPayload` and `graphUrl` for driving the chart directly.

@@ -7,10 +7,16 @@
  * registration out of the server render.
  */
 import { useEffect, useRef } from "react";
-import { defineTerraGraph, type GraphPayload, type GraphTheme, type TerraGraphElement } from "terra-graphs";
+import {
+  defineTerraGraph,
+  type GraphPayload,
+  type GraphTheme,
+  type IsoDate,
+  type TerraGraphElement,
+} from "terra-graphs";
 
-export type { GraphPayload, GraphTheme };
-export { TerraGraphError, graphUrl } from "terra-graphs";
+export type { GraphPayload, GraphTheme, IsoDate };
+export { TerraGraphError, graphUrl, toIsoDate } from "terra-graphs";
 
 export interface TerraGraphProps {
   /** The graph to render, from the Graphs page of the Terra dashboard. */
@@ -19,10 +25,11 @@ export interface TerraGraphProps {
   userId: string;
   /** Days back from today, inclusive of today. Defaults to 7. */
   timeframe?: number;
-  /** Start date, `YYYY-MM-DD` (UTC). Use instead of, or with, `timeframe`. */
-  from?: string;
+  /** Start date, `YYYY-MM-DD` (UTC). Use instead of, or with, `timeframe`.
+   *  Not a `Date` — see `IsoDate`; `toIsoDate()` converts one. */
+  from?: IsoDate;
   /** End date, `YYYY-MM-DD` (UTC), inclusive. */
-  to?: string;
+  to?: IsoDate;
   /** Graph API base URL. Only needed for a regional or proxied host. */
   baseUrl?: string;
   /** Colour overrides, applied over the graph's dashboard configuration. */

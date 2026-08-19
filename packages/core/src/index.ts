@@ -4,11 +4,13 @@ export {
   fetchPayload,
   graphUrl,
   loadRenderer,
+  toIsoDate,
   type GraphHandle,
   type GraphPayload,
   type GraphRange,
   type GraphSource,
   type GraphTheme,
+  type IsoDate,
 } from "./loader";
 export { defineTerraGraph, type TerraGraphElement } from "./element";
 

@@ -10,6 +10,7 @@ on:
         options:
           - terra-graphs
           - terra-graphs-react
+          - terra-graphs-react-native
       release-type:
         description: "patch | minor | major | prepatch | preminor | premajor | prerelease"
         required: true
@@ -46,6 +47,7 @@ jobs:
           case "${{ inputs.package }}" in
             terra-graphs)       echo "dir=packages/core"  >> "$GITHUB_OUTPUT" ;;
             terra-graphs-react) echo "dir=packages/react" >> "$GITHUB_OUTPUT" ;;
+            terra-graphs-react-native) echo "dir=packages/react-native" >> "$GITHUB_OUTPUT" ;;
             *) echo "unknown package ${{ inputs.package }}" >&2; exit 1 ;;
           esac
 

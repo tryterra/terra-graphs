@@ -9,11 +9,12 @@
   "license": "MIT",
   "workspaces": [
     "packages/core",
-    "packages/react"
+    "packages/react",
+    "packages/react-native"
   ],
   "scripts": {
     "build": "npm run build --workspaces",
-    "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/react",
+    "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/react && tsc --noEmit -p packages/react-native",
     "test": "node --test test/*.test.mjs",
     "test:e2e": "node test/e2e.mjs",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\" \"test/**/*.mjs\""
@@ -21,11 +22,15 @@
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.7",
+    "@types/react-native": "^0.72.8",
+    "@wuba/react-native-echarts": "^3.1.1",
+    "echarts": "^5.5.1",
     "esbuild": "^0.28.2",
     "playwright": "^1.62.1",
     "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-native": "^0.76.0",
     "tsup": "^8.3.5",
     "typescript": "^5.6.3"
   },

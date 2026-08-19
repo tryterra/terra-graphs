@@ -1,0 +1,110 @@
+{
+ "kind": "metric",
+ "xMode": "category",
+ "title": "Duration Asleep State Seconds",
+ "subtitle": "Jul 21 – Aug 19, 2026",
+ "chartType": "line",
+ "barLayout": "grouped",
+ "showLabels": false,
+ "theme": {
+  "bg": "#FFFFFF",
+  "line": "#60A5FA",
+  "text": "#000000",
+  "tick": "#a3a3a3"
+ },
+ "series": [
+  {
+   "name": "Duration Asleep State Seconds",
+   "unit": "h",
+   "format": "duration",
+   "chartType": "line",
+   "axisIndex": 0,
+   "isSamples": false,
+   "values": [
+    8.730166666666666,
+    7.516822222222222,
+    7.492966666666667,
+    7.348572222222223,
+    8.2128,
+    7.257411111111111,
+    7.863519444444444,
+    8.742738888888889,
+    7.122905555555556,
+    5.231983333333333,
+    5.902622222222222,
+    6.865577777777778,
+    6.644786111111111,
+    7.953794444444444,
+    6.143325,
+    8.43095,
+    6.433230555555556,
+    7.415011111111111,
+    7.817988888888888,
+    7.621386111111112,
+    6.917199999999999,
+    6.171591666666666,
+    5.625483333333333,
+    8.263,
+    8.302969444444445,
+    5.866366666666666,
+    6.610863888888889,
+    5.920963888888889,
+    5.808308333333334,
+    6.629994444444445
+   ]
+  }
+ ],
+ "categories": [
+  "Jul 21",
+  "Jul 22",
+  "Jul 23",
+  "Jul 24",
+  "Jul 25",
+  "Jul 26",
+  "Jul 27",
+  "Jul 28",
+  "Jul 29",
+  "Jul 30",
+  "Jul 31",
+  "Aug 1",
+  "Aug 2",
+  "Aug 3",
+  "Aug 4",
+  "Aug 5",
+  "Aug 6",
+  "Aug 7",
+  "Aug 8",
+  "Aug 9",
+  "Aug 10",
+  "Aug 11",
+  "Aug 12",
+  "Aug 13",
+  "Aug 14",
+  "Aug 15",
+  "Aug 16",
+  "Aug 17",
+  "Aug 18",
+  "Aug 19"
+ ],
+ "axes": [
+  {
+   "unit": "h"
+  }
+ ],
+ "rangeStart": "2026-07-21T00:00:00Z",
+ "rangeEnd": "2026-08-20T00:00:00Z",
+ "singleDay": false,
+ "icon": "sleep",
+ "headerStats": [
+  "average",
+  "range"
+ ],
+ "stats": {
+  "latest": 6.63,
+  "average": 7.1,
+  "lowest": 5.23,
+  "highest": 8.74,
+  "unit": "h",
+  "format": "duration"
+ }
+}

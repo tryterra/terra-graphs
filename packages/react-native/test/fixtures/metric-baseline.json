@@ -1,0 +1,114 @@
+{
+ "kind": "metric",
+ "xMode": "category",
+ "title": "Resting HR BPM",
+ "subtitle": "Jul 21 – Aug 19, 2026",
+ "chartType": "line",
+ "barLayout": "grouped",
+ "showLabels": false,
+ "theme": {
+  "bg": "#FFFFFF",
+  "line": "#60A5FA",
+  "text": "#000000",
+  "tick": "#a3a3a3"
+ },
+ "series": [
+  {
+   "name": "Resting HR BPM",
+   "unit": "bpm",
+   "chartType": "line",
+   "axisIndex": 0,
+   "isSamples": false,
+   "values": [
+    69.15,
+    46.03,
+    68.47,
+    64.05,
+    64.74,
+    63.2,
+    63.32,
+    67.63,
+    52.75,
+    52.77,
+    45.95,
+    61.95,
+    66.72,
+    46.55,
+    48.73,
+    45.95,
+    57.62,
+    49.38,
+    51.45,
+    61.96,
+    46.75,
+    47.49,
+    45.53,
+    59.38,
+    63.39,
+    55.99,
+    48.96,
+    65.05,
+    44.88,
+    64.56
+   ]
+  }
+ ],
+ "categories": [
+  "Jul 21",
+  "Jul 22",
+  "Jul 23",
+  "Jul 24",
+  "Jul 25",
+  "Jul 26",
+  "Jul 27",
+  "Jul 28",
+  "Jul 29",
+  "Jul 30",
+  "Jul 31",
+  "Aug 1",
+  "Aug 2",
+  "Aug 3",
+  "Aug 4",
+  "Aug 5",
+  "Aug 6",
+  "Aug 7",
+  "Aug 8",
+  "Aug 9",
+  "Aug 10",
+  "Aug 11",
+  "Aug 12",
+  "Aug 13",
+  "Aug 14",
+  "Aug 15",
+  "Aug 16",
+  "Aug 17",
+  "Aug 18",
+  "Aug 19"
+ ],
+ "axes": [
+  {
+   "unit": "bpm"
+  }
+ ],
+ "rangeStart": "2026-07-21T00:00:00Z",
+ "rangeEnd": "2026-08-20T00:00:00Z",
+ "singleDay": false,
+ "icon": "heart",
+ "headerStats": [
+  "latest",
+  "average"
+ ],
+ "stats": {
+  "latest": 64.56,
+  "average": 56.35,
+  "lowest": 44.88,
+  "highest": 69.15,
+  "unit": "bpm"
+ },
+ "baseline": {
+  "value": 56.35,
+  "label": "Baseline"
+ },
+ "showMarkers": true,
+ "markers": "both"
+}

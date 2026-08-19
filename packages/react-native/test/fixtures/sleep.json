@@ -1,0 +1,151 @@
+{
+ "kind": "sleep",
+ "xMode": "",
+ "title": "Sleep Stages",
+ "subtitle": "Jul 21 – Aug 19, 2026",
+ "chartType": "line",
+ "barLayout": "",
+ "showLabels": false,
+ "theme": {
+  "bg": "#FFFFFF",
+  "line": "#60A5FA",
+  "text": "#000000",
+  "tick": "#a3a3a3"
+ },
+ "sleep": {
+  "epochs": [
+   {
+    "x": "2026-08-18T23:00:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-18T23:20:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-18T23:40:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T00:00:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T00:20:00Z",
+    "level": 2
+   },
+   {
+    "x": "2026-08-19T00:40:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T01:00:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T01:20:00Z",
+    "level": 2
+   },
+   {
+    "x": "2026-08-19T01:40:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T02:00:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T02:20:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T02:40:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T03:00:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T03:20:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T03:40:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T04:00:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T04:20:00Z",
+    "level": 3
+   },
+   {
+    "x": "2026-08-19T04:40:00Z",
+    "level": 2
+   },
+   {
+    "x": "2026-08-19T05:00:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T05:20:00Z",
+    "level": 0
+   },
+   {
+    "x": "2026-08-19T05:40:00Z",
+    "level": 1
+   },
+   {
+    "x": "2026-08-19T06:00:00Z",
+    "level": 2
+   },
+   {
+    "x": "2026-08-19T06:20:00Z",
+    "level": 3
+   },
+   {
+    "x": "2026-08-19T06:40:00Z",
+    "level": 1
+   }
+  ],
+  "stages": [
+   {
+    "key": "awake",
+    "label": "Awake",
+    "color": "#A7E0B5",
+    "seconds": 2400,
+    "percent": 8
+   },
+   {
+    "key": "rem",
+    "label": "REM",
+    "color": "#6FCF97",
+    "seconds": 4800,
+    "percent": 16
+   },
+   {
+    "key": "light",
+    "label": "Light",
+    "color": "#2F9E5F",
+    "seconds": 10800,
+    "percent": 37
+   },
+   {
+    "key": "deep",
+    "label": "Deep",
+    "color": "#1B5E3A",
+    "seconds": 10800,
+    "percent": 37
+   }
+  ],
+  "durationLabel": "7h 20min",
+  "awakeLabel": "40min"
+ },
+ "rangeStart": "2026-07-21T00:00:00Z",
+ "rangeEnd": "2026-08-20T00:00:00Z",
+ "singleDay": false,
+ "icon": "sleep"
+}

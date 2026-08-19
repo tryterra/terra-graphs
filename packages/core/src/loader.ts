@@ -12,13 +12,35 @@
 export const DEFAULT_BASE_URL = "https://api.tryterra.co/v2";
 
 /** The date window to render. Ranges are capped at 92 days by the API. */
+/**
+ * A calendar date, `YYYY-MM-DD`, in UTC.
+ *
+ * Deliberately not a `Date`. A graph window is a run of calendar days, while a
+ * `Date` is an instant — converting between them means choosing a timezone, and
+ * no choice is right for everyone. The obvious conversion is also wrong: a date
+ * picker hands you `new Date(2026, 7, 1)` for "1 August", and
+ * `.toISOString().slice(0, 10)` turns that into `2026-07-31` anywhere east of
+ * Greenwich. Typing the string means a `Date` fails to compile instead of
+ * shifting a day in production. Use `toIsoDate()` if you have a `Date`.
+ */
+export type IsoDate = `${number}-${number}-${number}`;
+
+/**
+ * The calendar day a `Date` falls on in the local timezone — what a date picker
+ * means when the user clicks a day. Use this rather than `toISOString()`.
+ */
+export function toIsoDate(date: Date): IsoDate {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` as IsoDate;
+}
+
 export interface GraphRange {
   /** Number of days back from today, inclusive of today. */
   timeframe?: number | string;
   /** Start date, `YYYY-MM-DD` (UTC). */
-  from?: string;
+  from?: IsoDate;
   /** End date, `YYYY-MM-DD` (UTC), inclusive. */
-  to?: string;
+  to?: IsoDate;
 }
 
 export interface GraphSource extends GraphRange {

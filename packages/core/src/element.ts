@@ -13,9 +13,13 @@ import {
   TerraGraphError,
   type GraphHandle,
   type GraphTheme,
+  type IsoDate,
 } from "./loader";
 
 const OBSERVED = ["session-id", "user-id", "timeframe", "from", "to", "base-url"];
+
+/** `YYYY-MM-DD`. Range-checked by the API; this only rejects the wrong shape. */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /** Just enough to fill the box while the payload is in flight — the renderer
  *  brings its own skeleton, but only once it has something to render. */
@@ -113,6 +117,19 @@ function buildElementClass(): CustomElementConstructor {
       this.#handle = null;
     }
 
+    // HTML attributes are untyped strings, so the `IsoDate` guarantee the
+    // TypeScript API gets has to be re-established here at runtime. Failing
+    // loudly beats forwarding `08/01/2026` and letting the API answer with
+    // something the customer has to decode.
+    #dateAttr(name: "from" | "to"): IsoDate | undefined {
+      const raw = this.getAttribute(name);
+      if (raw == null || raw === "") return undefined;
+      if (!ISO_DATE.test(raw)) {
+        throw new Error(`terra-graphs: ${name}="${raw}" is not a YYYY-MM-DD date`);
+      }
+      return raw as IsoDate;
+    }
+
     async #load(): Promise<void> {
       const sessionId = this.getAttribute("session-id");
       const userId = this.getAttribute("user-id");
@@ -127,14 +144,20 @@ function buildElementClass(): CustomElementConstructor {
       this.#abort = abort;
 
       const baseUrl = this.getAttribute("base-url") || DEFAULT_BASE_URL;
-      const source = {
-        sessionId,
-        userId,
-        baseUrl,
-        timeframe: this.getAttribute("timeframe") ?? undefined,
-        from: this.getAttribute("from") ?? undefined,
-        to: this.getAttribute("to") ?? undefined,
-      };
+      let source;
+      try {
+        source = {
+          sessionId,
+          userId,
+          baseUrl,
+          timeframe: this.getAttribute("timeframe") ?? undefined,
+          from: this.#dateAttr("from"),
+          to: this.#dateAttr("to"),
+        };
+      } catch (err) {
+        this.#fail(err);
+        return;
+      }
 
       this.#setState("loading");
       try {
