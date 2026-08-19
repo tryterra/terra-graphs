@@ -1,46 +1,39 @@
 {
-  "name": "terra-graphs",
-  "version": "1.0.2",
-  "description": "Wrapper for the terra graphs API",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "scripts": {
-    "test": "exit 0",
-    "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
-  },
+  "name": "terra-graphs-workspace",
+  "private": true,
+  "description": "Embed Terra health graphs in your app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tryterra/terra-graphs.git"
   },
-  "files": [
-    "lib/**/*"
+  "license": "MIT",
+  "workspaces": [
+    "packages/core",
+    "packages/react"
   ],
-  "keywords": [
-    "Terra",
-    "Health",
-    "Fitness",
-    "Dashboard",
-    "Graphs"
-  ],
-  "author": "JaafarRammal",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tryterra/terra-graphs/issues"
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/react",
+    "test": "node --test test/*.test.mjs",
+    "test:e2e": "node test/e2e.mjs",
+    "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\" \"test/**/*.mjs\""
   },
-  "homepage": "https://github.com/tryterra/terra-graphs#readme",
   "devDependencies": {
-    "@types/react": "^18.0.17",
-    "@types/styled-components": "^5.1.25",
-    "prettier": "^2.7.1",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.7.4"
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.7",
+    "esbuild": "^0.28.2",
+    "playwright": "^1.62.1",
+    "prettier": "^3.3.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  },
+  "prettier": {
+    "printWidth": 110
+  },
+  "allowScripts": {
+    "esbuild@0.27.7": true,
+    "esbuild@0.28.2": true
   }
 }
