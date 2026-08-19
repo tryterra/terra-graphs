@@ -22,14 +22,27 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(HERE, "..", "src", "option-builder.js");
 const LIVE = "https://api.tryterra.co/v2/graphs/embed.js";
 
+/**
+ * Finds a marked region. The marker name must be followed by whitespace or the
+ * end of the line — `option-builder` is a prefix of `option-builder-helpers`,
+ * so a plain substring search silently matches the wrong marker and extracts
+ * the wrong region.
+ */
 const region = (src, name) => {
-  const start = src.indexOf(`>>> terra-graph:${name}`);
-  const end = src.indexOf(`<<< terra-graph:${name}`);
+  const at = (arrow) => {
+    const m = new RegExp(`${arrow} terra-graph:${name}(?=\\s|$)`).exec(src);
+    return m ? m.index : -1;
+  };
+  const start = at(">>>");
+  const end = at("<<<");
   if (start < 0 || end < 0) {
     throw new Error(
       `no '${name}' markers in the renderer. They are comments in terra-v6's ` +
         `terra-graph.js; if they were removed, restore them rather than pinning line numbers here.`,
     );
+  }
+  if (end < start) {
+    throw new Error(`'${name}' markers are out of order in the renderer`);
   }
   // Drop the marker's own comment line, keep everything after it.
   return src.slice(src.indexOf("\n", start) + 1, end).replace(/[ \t]*\/\/[^\n]*$/, "");
