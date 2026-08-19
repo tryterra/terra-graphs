@@ -31,11 +31,21 @@ export function formatDuration(v: unknown, unit?: string): string {
   return `${Math.round(n)}s`;
 }
 
-/** Splits a formatted value into number and unit, so the unit can be set
- *  smaller and dimmer as it is on the web. */
-function splitUnits(label: string): { value: string; unit: string } {
-  const m = /^(.*?)([a-zA-Z%°]+)$/.exec(label.trim());
-  return m?.[1] && m[2] ? { value: m[1], unit: m[2] } : { value: label, unit: "" };
+/**
+ * Splits a formatted value into number and unit, so the unit can be set smaller
+ * and dimmer as it is on the web.
+ *
+ * Anchored on a leading number, so a compound label like "7h 20min" is left
+ * whole rather than cut into "7h 20" + "min" — which would set the "h" at
+ * heading size and only the "min" as a unit. Takes `unknown` because the
+ * payload is network data: a sleep graph for a night with no data arrives with
+ * no labels at all, and a throw here escapes the card's error handling and
+ * takes the screen down.
+ */
+function splitUnits(label: unknown): { value: string; unit: string } {
+  const s = String(label ?? "").trim();
+  const m = /^(-?[\d.,]+)\s*([a-zA-Z%°]+)$/.exec(s);
+  return m?.[1] && m[2] ? { value: m[1], unit: m[2] } : { value: s, unit: "" };
 }
 
 export interface StatColumn {
@@ -53,10 +63,12 @@ export interface StatColumn {
  */
 export function headerStats(payload: GraphPayload): StatColumn[] {
   if (payload.kind === "sleep" && payload.sleep) {
+    // A night with no sleep data arrives with no labels; show no stats rather
+    // than two blank columns.
     return [
       { ...splitUnits(payload.sleep.durationLabel), label: "duration" },
       { ...splitUnits(payload.sleep.awakeLabel), label: "Awake" },
-    ];
+    ].filter((c) => c.value !== "");
   }
   const s = payload.stats;
   if (!payload.headerStats?.length || !s) return [];

@@ -15,6 +15,7 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "typecheck": "tsc --noEmit -p packages/core && tsc --noEmit -p packages/react && tsc --noEmit -p packages/react-native",
+    "pretest": "npm run build",
     "test": "node --test test/*.test.mjs",
     "test:e2e": "node test/e2e.mjs",
     "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\" \"test/**/*.mjs\""

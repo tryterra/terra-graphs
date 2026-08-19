@@ -80,7 +80,25 @@ test("refuses a DOM reference smuggled into the marked region", async () => {
     ),
   );
   assert.ok(stderr, "extraction should have failed");
-  assert.match(stderr, /touches the DOM/, stderr.slice(0, 300));
+  assert.match(stderr, /does not provide/, stderr.slice(0, 300));
+});
+
+// The subtler escape. The marked region lives inside the renderer's
+// `mount(host, payload, opts)`, but the generated wrapper supplies only
+// `payload`, `env` and `echarts`. A surviving `host` reference extracts
+// cleanly, renders in every other test here, and throws ReferenceError on a
+// phone — only when that path runs, e.g. a tooltip formatter on first tap.
+test("refuses a reference to an identifier the native wrapper cannot supply", async () => {
+  for (const identifier of ["host", "opts"]) {
+    const stderr = await extract(FAKE, (src) =>
+      src.replace(
+        "    function buildOption() {",
+        `    function buildOption() {\n      var leaked = ${identifier};`,
+      ),
+    );
+    assert.ok(stderr, `${identifier} should have been refused`);
+    assert.match(stderr, /does not provide/, stderr.slice(0, 300));
+  }
 });
 
 test("refuses when a DOM read it rewrites has changed shape", async () => {

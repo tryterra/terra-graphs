@@ -10,27 +10,28 @@ npm install terra-graphs-react-native @wuba/react-native-echarts @shopify/react-
 
 ```jsx
 import { TerraGraph } from "terra-graphs-react-native";
-import SkiaChart from "@wuba/react-native-echarts/skiaChart";
+import SkiaChart, { SkiaRenderer } from "@wuba/react-native-echarts/skiaChart";
 
 <TerraGraph
   sessionId="a1b2c3d4-0000-0000-0000-000000000000"
   userId={terraUserId}
   timeframe={30}
   chart={SkiaChart}
+  renderer={SkiaRenderer}
   height={240}
 />;
 ```
 
 **Expo:** these are native modules, so they need a [development build](https://docs.expo.dev/develop/development-builds/introduction/) — they don't run in Expo Go. If you'd rather not leave Expo Go, use the WebView embed instead (see below).
 
-## Why you pass `chart`
+## Why you pass `chart` and `renderer`
 
-The painter is yours to choose, and you import it so your app links only the native module it actually uses:
+The painter is yours to choose, and you import both halves of it so your app links only the native module it actually uses. They always come as a pair from the same entry point:
 
-| Painter | Install | Pass |
+| Painter | Install | Import |
 | --- | --- | --- |
-| **Skia** (recommended) | `@shopify/react-native-skia` | `chart={SkiaChart}` |
-| **SVG** | `react-native-svg` | `chart={SvgChart}` and `renderer={SVGRenderer}` |
+| **Skia** (recommended) | `@shopify/react-native-skia` | `SkiaChart, { SkiaRenderer }` from `@wuba/react-native-echarts/skiaChart` |
+| **SVG** | `react-native-svg` | `SvgChart, { SVGRenderer }` from `@wuba/react-native-echarts/svgChart` |
 
 ```jsx
 import SvgChart, { SVGRenderer } from "@wuba/react-native-echarts/svgChart";
@@ -38,7 +39,7 @@ import SvgChart, { SVGRenderer } from "@wuba/react-native-echarts/svgChart";
 <TerraGraph sessionId={s} userId={u} chart={SvgChart} renderer={SVGRenderer} />;
 ```
 
-If the component imported both, every app would carry Skia *and* react-native-svg.
+If the component imported them itself, every app would carry Skia *and* react-native-svg. Both are needed because ECharts draws through a painter the renderer registers, and the chart view is what it paints into — passing one without the other leaves nothing to draw with.
 
 ## Props
 
@@ -47,7 +48,7 @@ If the component imported both, every app would carry Skia *and* react-native-sv
 | `sessionId` | `string` | **Required.** The graph, from the dashboard. |
 | `userId` | `string` | **Required.** The Terra user to render, or `"example"`. |
 | `chart` | component | **Required.** `SkiaChart` or `SvgChart` (above). |
-| `renderer` | — | Required with `SvgChart`: pass `SVGRenderer`. |
+| `renderer` | — | **Required.** The matching `SkiaRenderer` or `SVGRenderer`. |
 | `timeframe` | `number` | Days back from today, including today. Defaults to 7. |
 | `from`, `to` | `IsoDate` | `YYYY-MM-DD` (UTC). `to` is inclusive. |
 | `baseUrl` | `string` | Graph API base. Defaults to `https://api.tryterra.co/v2`. |
@@ -66,7 +67,14 @@ That is deliberate. A graph window is a run of calendar days; a `Date` is an ins
 ```jsx
 import { toIsoDate } from "terra-graphs-react-native";
 
-<TerraGraph sessionId={s} userId={u} from={toIsoDate(picked)} to={toIsoDate(until)} />;
+<TerraGraph
+  sessionId={s}
+  userId={u}
+  chart={SkiaChart}
+  renderer={SkiaRenderer}
+  from={toIsoDate(picked)}
+  to={toIsoDate(until)}
+/>;
 ```
 
 ## Choosing the dates
@@ -91,9 +99,12 @@ const scheme = useColorScheme();
   sessionId={s}
   userId={u}
   chart={SkiaChart}
+  renderer={SkiaRenderer}
   theme={scheme === "dark" ? { bg: "#0F172A", text: "#E2E8F0", line: "#38BDF8" } : undefined}
 />;
 ```
+
+Give colours as hex (`#38BDF8`, `#3BF`) or `rgb()`/`rgba()`. Named colours and `hsl()` are not parsed off-DOM and fall back to grey.
 
 ## Handling failures
 
@@ -104,9 +115,12 @@ const scheme = useColorScheme();
   sessionId={s}
   userId={u}
   chart={SkiaChart}
+  renderer={SkiaRenderer}
   onError={(error) => reportToSentry(error, { traceId: error.traceId })}
 />
 ```
+
+A mismatched or missing `renderer` surfaces here too, as `Renderer '…' is not imported` — the most common setup mistake, reported through the card rather than as an unhandled exception.
 
 ## The WebView alternative
 

@@ -26,6 +26,32 @@ const FIXTURES = path.join(
   "test",
   "fixtures",
 );
+/**
+ * Marks each fixture paints, pinned exactly.
+ *
+ * A `marks > n` floor looked like it proved the chart drew, but nine of these
+ * eleven clear any sane floor on axis furniture alone — strip every data point
+ * out of metric-bar and it still paints 17 marks. A regression that dropped a
+ * whole decoration (the baseline fill, the zone tinting, the min/max markers,
+ * the range whiskers) was invisible, and those are exactly what the
+ * extraction's rewrites touch.
+ *
+ * Change a number here only alongside a renderer change that explains it.
+ */
+const EXPECTED_MARKS = {
+  "agp.json": 45,
+  "macro.json": 258,
+  "metric-bar.json": 88,
+  "metric-baseline.json": 39,
+  "metric-combo.json": 75,
+  "metric-duration.json": 29,
+  "metric-panels.json": 53,
+  "metric-range.json": 53,
+  "metric-status.json": 31,
+  "metric-zones.json": 26,
+  "sleep.json": 57,
+};
+
 const names = fs.readdirSync(FIXTURES).filter((f) => f.endsWith(".json"));
 
 /** Renders headlessly and counts the marks actually painted. */
@@ -44,14 +70,17 @@ function render(payload, env = {}) {
   }
 }
 
-test("every chart kind renders with no DOM", async (t) => {
-  assert.ok(names.length >= 10, `expected the full fixture set, found ${names.length}`);
+test("every chart kind renders with no DOM, mark for mark", async (t) => {
+  assert.deepEqual(
+    [...names].sort(),
+    Object.keys(EXPECTED_MARKS).sort(),
+    "the fixture set and the expected-mark table have diverged",
+  );
   for (const name of names) {
     await t.test(name, () => {
       const payload = JSON.parse(fs.readFileSync(path.join(FIXTURES, name), "utf8"));
       const { marks } = render(payload);
-      // A chart that mounts but paints an empty frame passes any weaker check.
-      assert.ok(marks > 10, `${name} drew only ${marks} marks`);
+      assert.equal(marks, EXPECTED_MARKS[name], `${name}: mark count changed`);
     });
   }
 });

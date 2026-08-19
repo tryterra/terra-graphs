@@ -85,3 +85,42 @@ test("every fixture produces the header stats its payload asked for", () => {
     }
   }
 });
+
+// A sleep graph for a night with no data arrives with no labels. This used to
+// throw inside splitUnits during render — outside the card's error handling,
+// so it took the screen down rather than showing the error state.
+test("a sleep payload with no labels renders no stats instead of throwing", () => {
+  assert.deepEqual(headerStats({ kind: "sleep", title: "t", sleep: { stages: [] } }), []);
+  assert.deepEqual(
+    headerStats({ kind: "sleep", title: "t", sleep: { stages: [], durationLabel: "7h 20min" } }),
+    [{ value: "7h 20min", unit: "", label: "duration" }],
+  );
+});
+
+// Splitting on the last letter run cut "7h 20min" into "7h 20" + "min", which
+// set the "h" at heading size and only "min" as a unit. A compound label is
+// left whole; a plain one still splits.
+test("only a plain number-and-unit label is split", () => {
+  const only = (payload) => headerStats(payload)[0];
+  assert.deepEqual(only({ kind: "sleep", title: "t", sleep: { stages: [], durationLabel: "7h 20min" } }), {
+    value: "7h 20min",
+    unit: "",
+    label: "duration",
+  });
+  assert.deepEqual(only({ kind: "sleep", title: "t", sleep: { stages: [], durationLabel: "45min" } }), {
+    value: "45",
+    unit: "min",
+    label: "duration",
+  });
+});
+
+// statFmt renders the null placeholder; it must not be mistaken for a unit.
+test("the null placeholder is never split into a unit", () => {
+  const [column] = headerStats({
+    kind: "metric",
+    title: "t",
+    headerStats: ["average"],
+    stats: { average: null, unit: "bpm" },
+  });
+  assert.equal(column.value, "–");
+});

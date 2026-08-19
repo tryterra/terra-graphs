@@ -85,17 +85,24 @@ const REWRITES = [
       var hex = probe.fillStyle; // normalized #rrggbb
       return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
     }`,
-    to: `    // The web build normalises any CSS colour through a canvas; off-DOM we parse
-    // the forms the payload and the dashboard's theme presets actually produce,
-    // and fall back to mid-grey rather than throwing on anything else.
+    to: `    // The web build normalises any CSS colour through a canvas. Off-DOM we parse
+    // the forms the payload and the dashboard's theme presets produce: 3-, 6- and
+    // 8-digit hex (alpha ignored, as the canvas probe did) and rgb()/rgba() with
+    // either comma or space separators. Anything else — a named colour, hsl() —
+    // falls back to mid-grey, which is visible but never wrong-looking. Only a
+    // complete triple is returned: a partial one would yield
+    // "rgba(56,undefined,undefined,0.88)" downstream, silently.
     function rgb(color) {
       var s = String(color || "").trim();
       var m = /^#([0-9a-f]{3})$/i.exec(s);
       if (m) return m[1].split("").map(function (c) { return parseInt(c + c, 16); });
-      m = /^#([0-9a-f]{6})$/i.exec(s);
+      m = /^#([0-9a-f]{6})(?:[0-9a-f]{2})?$/i.exec(s);
       if (m) return [0, 2, 4].map(function (i) { return parseInt(m[1].slice(i, i + 2), 16); });
       m = /^rgba?\\(([^)]+)\\)$/i.exec(s);
-      if (m) return m[1].split(",").slice(0, 3).map(function (p) { return parseInt(p, 10) || 0; });
+      if (m) {
+        var parts = m[1].split(/[\\s,\\/]+/).filter(Boolean).slice(0, 3).map(function (p) { return parseInt(p, 10); });
+        if (parts.length === 3 && parts.every(function (n) { return !isNaN(n); })) return parts;
+      }
       return [127, 127, 127];
     }`,
   },
@@ -133,15 +140,23 @@ for (const r of REWRITES) {
   body = body.replace(r.from, r.to);
 }
 
+// Two classes of escape, both silent if they get through.
+//
+// Browser globals are the obvious one. `host` and `opts` are the subtle one:
+// the marked region lives inside the renderer's `mount(host, payload, opts)`,
+// but the generated wrapper supplies only `payload`, `env` and `echarts`. A
+// surviving reference to either extracts cleanly, renders fine, and throws
+// ReferenceError on a customer's phone the first time that path runs — a
+// tooltip formatter, say, which no test here ever invokes.
+const FORBIDDEN = /\b(document|window|globalThis|getComputedStyle|navigator|localStorage|host|opts)\b/;
 const leaks = body
   .split("\n")
   .map((line, i) => [i + 1, line])
-  .filter(
-    ([, l]) => /\b(document|window|getComputedStyle|navigator)\b/.test(l) && !l.trim().startsWith("//"),
-  );
+  .filter(([, l]) => FORBIDDEN.test(l) && !l.trim().startsWith("//") && !l.trim().startsWith("*"));
 if (leaks.length) {
   throw new Error(
-    "the extracted builder still touches the DOM, so it cannot run natively:\n" +
+    "the extracted builder references something the native wrapper does not provide,\n" +
+      "so it would fail at runtime rather than here:\n" +
       leaks.map(([n, l]) => `  line ${n}: ${l.trim()}`).join("\n"),
   );
 }
