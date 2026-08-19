@@ -12,7 +12,7 @@ on:
           - terra-graphs-react
           - terra-graphs-react-native
       release-type:
-        description: "patch | minor | major | prepatch | preminor | premajor | prerelease"
+        description: "as-is (publish the version in package.json) | patch | minor | major | prepatch | preminor | premajor | prerelease"
         required: true
         default: patch
 
@@ -60,7 +60,12 @@ jobs:
       - name: Bump version
         working-directory: ${{ steps.pkg.outputs.dir }}
         run: |
-          if [[ "${{ inputs.release-type }}" == pre* ]]; then
+          if [[ "${{ inputs.release-type }}" == "as-is" ]]; then
+            # A package's first release goes out at the version already decided
+            # in package.json; there is nothing to bump from.
+            NEW_VERSION="v$(node -p "require('./package.json').version")"
+            echo "RELEASE_TAG=latest" >> "$GITHUB_ENV"
+          elif [[ "${{ inputs.release-type }}" == pre* ]]; then
             NEW_VERSION=$(npm --no-git-tag-version --preid=beta version "${{ inputs.release-type }}")
             echo "RELEASE_TAG=beta" >> "$GITHUB_ENV"
           else
@@ -80,7 +85,9 @@ jobs:
       - name: Commit and tag
         run: |
           git add CHANGELOG.md "${{ steps.pkg.outputs.dir }}/package.json" package-lock.json
-          git commit -m "chore: release ${{ env.TAG }}"
+          # An as-is release bumps nothing, so there may be nothing staged —
+          # that must not abort the tag and the publish.
+          git diff --cached --quiet || git commit -m "chore: release ${{ env.TAG }}"
           git tag "${{ env.TAG }}"
           git push origin HEAD --tags
 
