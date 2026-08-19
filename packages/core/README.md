@@ -176,7 +176,7 @@ document.querySelector("terra-graph").theme = { bg: "#0F172A", text: "#E2E8F0", 
 - `type` (`DAILY_STEPS_SUMMARY` and friends) is gone. The graph and its metric are configured in the dashboard and referenced by `session-id`.
 - `token` is gone. Nothing is minted per render; `user-id` names the user directly.
 - `startDate` / `endDate` / `timePeriod` become `from` / `to` / `timeframe`.
-- `getImg`, `imgWidth`, `imgHeight`, `getSmallTemplate` have no replacement — the chart is live and responsive.
+- `getImg`, `imgWidth`, `imgHeight`, `getSmallTemplate` have no replacement: the server-side PNG and compact-template modes they drove are not implemented by the current Graph API.
 
 ## Docs
 

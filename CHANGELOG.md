@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- **Breaking.** `getImg`, `imgWidth`, `imgHeight` and `getSmallTemplate`. The chart is live and responsive; there is no static-image mode.
+- **Breaking.** `getImg`, `imgWidth`, `imgHeight`, `getSmallTemplate` and `getReactNative`. These drove server-side options the current Graph API does not implement — a rendered PNG, a compact template and a React-Native-tuned one. They are gaps rather than decisions, and if they come back it will be as a server feature both this package and the hosted embed can use.
 
 ## [1.0.2] - 2022-09-01
 
