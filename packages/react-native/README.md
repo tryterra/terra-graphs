@@ -129,6 +129,19 @@ That path always renders whatever Terra serves, so it never needs upgrading. Thi
 
 That keeps the *drawing* in step. It does not make this package self-updating: unlike the web embed, a renderer fix reaches your users only when you upgrade and ship a new build.
 
+## Using the pieces without the component
+
+Everything that isn't a React Native view is also published as
+`terra-graphs-react-native/core` — the payload fetching, the header's numbers
+and the chart-option builder — for building your own chart surface:
+
+```js
+import { fetchPayload, buildChartOption } from "terra-graphs-react-native/core";
+
+const payload = await fetchPayload({ sessionId, userId, timeframe: 30 });
+const option = buildChartOption(payload, { echarts });
+```
+
 ## Docs
 
 Full guide: [docs.tryterra.co/graphs](https://docs.tryterra.co/graphs)

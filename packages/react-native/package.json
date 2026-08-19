@@ -34,10 +34,10 @@
       "require": "./dist/index.cjs"
     },
     "./package.json": "./package.json",
-    "./stats": {
-      "types": "./dist/stats.d.ts",
-      "import": "./dist/stats.js",
-      "require": "./dist/stats.cjs"
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
     }
   },
   "files": [
