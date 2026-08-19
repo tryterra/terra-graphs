@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm test
+
+      # The end-to-end run drives a real browser against the deployed Graph
+      # API, so it fails on a network blip rather than a code change. Kept
+      # non-blocking; run it locally when touching the element or the wrapper.
+      - name: End-to-end (informational)
+        continue-on-error: true
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e

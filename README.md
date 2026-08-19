@@ -1,48 +1,64 @@
-# Terra Graphs Wrapper
+# terra-graphs
 
-This is a wrapper for the Terra Graphs API endpoint.
+Embed Terra health graphs in your app, without an iframe.
 
-There is a single available component, `<TerraGraph />`.
+| Package | Install | For |
+| --- | --- | --- |
+| [`terra-graphs`](packages/core) | `npm i terra-graphs` | Any framework, via the `<terra-graph>` custom element |
+| [`terra-graphs-react`](packages/react) | `npm i terra-graphs-react` | React, with typed props and callbacks |
+| [`terra-graphs-react-native`](packages/react-native) | `npm i terra-graphs-react-native` | React Native, drawn natively (no WebView) |
 
-| Property         | Type           | Description                                                                                                                                               |
-| ---------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| type             | TerraGraphType | The graph type desired. See valid types on https://docs.tryterra.co/reference/using-graphs#graph-types                                                    |
-| token            | string         | An access token for a particular user to enable data access and graph rendering. Generate a token using https://docs.tryterra.co/reference/generate-token |
-| styles           | CSSProperties  | Custom css properties for the graph container                                                                                                             |
-| className        | string         | Classname for the graph container                                                                                                                         |
-| test             | boolean        | Whether to use a test graph. Test graphs don't require a valid token as they are intended to test the UI / UX                                             |
-| loadingComponent | JSX.Element    | Custom element displayed when the graph is loading. Default is null                                                                                       |
+Graphs are designed in the [Terra dashboard](https://dashboard.tryterra.co/dashboard/graphs) — metric, chart type, colours, header stats — and referenced here by id. Full guide: [docs.tryterra.co/graphs](https://docs.tryterra.co/graphs).
 
-## Example
+## How it works
 
-```tsx
-import { TerraGraph } from 'terra-graphs';
-import { BarLoader } from 'react-spinners';
+All three packages fetch the same thing — a **chart payload** from
+`GET /graphs/{session}/{user}?format=json`, the identical view model Terra's own
+hosted embed renders. They differ in what draws it.
 
-function App() {
-  const token = 'valid_token';
-  return (
-    <div className="p-12 bg-sky-100">
-      <div className="text-3xl font-bold mb-10">Sample Dashboard</div>
-      <div className="flex flex-row flex-wrap justify-start">
-        {['SLEEP_HR_SUMMARY', 'SLEEP_HRV_SUMMARY', 'SLEEP_ASLEEP_DURATION', 'DAILY_STEPS_SUMMARY'].map((t, i) => (
-          <TerraGraph
-            key={i}
-            type={t}
-            token={token}
-            test={i === 0}
-            className="md:w-1/3 h-[350px] w-full"
-            loadingComponent={
-              <div className="w-full h-full flex flex-col">
-                <div className="m-auto">
-                  <BarLoader />
-                </div>
-              </div>
-            }
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
+**On the web**, the chart engine is not bundled: the packages load Terra's
+renderer from the Graph API at mount time and draw into a shadow root. That is
+deliberate. One renderer serves Terra's dashboard, the hosted embed and your
+app, so what you see while designing a graph is what your users get, and a
+rendering fix reaches every embed with nobody publishing or upgrading anything.
+It is the shape Stripe.js and the Google Maps loader use, for the same reason.
+The cost is network access to `api.tryterra.co` at render time — already needed
+for the data — and a CSP entry if you run one.
+
+**On React Native there is no DOM to load a renderer into**, so that package
+bundles instead. To keep the two from drifting, its `option-builder.js` is
+generated verbatim from the web renderer (three DOM reads replaced, nothing
+else) and the test suite renders every chart kind through it. That keeps the
+drawing identical, but it cannot restore the property above: a native app gets a
+renderer fix when it upgrades and ships, not when we deploy. If that matters
+more than avoiding a web view, embed the hosted URL in a `WebView` instead —
+`packages/react-native/README.md` shows both.
+
+## Development
+
+```bash
+npm install
+npm run build      # both packages, ESM + CJS + types
+npm run typecheck
+npm test           # unit tests, including the server-render guarantee
+npm run test:e2e   # mounts both packages in headless Chromium
 ```
+
+`npm run test:e2e` renders real payloads through the real renderer. It reads the renderer from the deployed API by default; to test against an unreleased one, point it at a local copy:
+
+```bash
+TERRA_GRAPH_BUNDLE=../terra-v6/services/api/dist/static/graphs/terra-graph.js npm run test:e2e
+```
+
+The renderer itself lives in `terra-v6` at `services/api/dist/static/graphs/terra-graph.js`. Chart changes belong there, not here — including for React Native, whose `option-builder.js` is generated from it:
+
+```bash
+cd packages/react-native
+node scripts/extract-option-builder.mjs                 # from the deployed renderer
+node scripts/extract-option-builder.mjs ../path/to/terra-graph.js   # or a local one
+npm test                                                # renders every chart kind through it
+```
+
+## Releasing
+
+`.github/workflows/release_package.yml`, run manually from the Actions tab. Pick a package and a release type; it builds, bumps, tags, and publishes to npm.

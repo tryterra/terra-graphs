@@ -1,0 +1,10 @@
+# Generated verbatim from Terra's web renderer — reformatting it would make the
+# native chart differ from the web one.
+packages/react-native/src/option-builder.js
+
+# A byte-exact stand-in for that renderer: the extraction script matches these
+# snippets literally, so reformatting silently disarms the tests that guard it.
+packages/react-native/test/fake-renderer.js
+
+# Captured API responses.
+packages/react-native/test/fixtures/
