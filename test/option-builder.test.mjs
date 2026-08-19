@@ -37,6 +37,12 @@ const FIXTURES = path.join(
  * extraction's rewrites touch.
  *
  * Change a number here only alongside a renderer change that explains it.
+ *
+ * Recorded under TZ=UTC, which `npm test` pins. They are not timezone-neutral:
+ * sleep.json paints one fewer mark in Asia/Tokyo than in UTC, because its axis
+ * labels the hours of the local day and a tick lands differently. That is the
+ * renderer being right — a hypnogram must read in the viewer's own time — so
+ * the test is what gets pinned, not the chart.
  */
 const EXPECTED_MARKS = {
   "agp.json": 45,
@@ -49,7 +55,7 @@ const EXPECTED_MARKS = {
   "metric-range.json": 53,
   "metric-status.json": 31,
   "metric-zones.json": 26,
-  "sleep.json": 57,
+  "sleep.json": 58,
 };
 
 const names = fs.readdirSync(FIXTURES).filter((f) => f.endsWith(".json"));
