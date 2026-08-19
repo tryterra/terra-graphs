@@ -22,7 +22,7 @@ import SkiaChart, { SkiaRenderer } from "@wuba/react-native-echarts/skiaChart";
 />;
 ```
 
-**Expo:** these are native modules, so they need a [development build](https://docs.expo.dev/develop/development-builds/introduction/) — they don't run in Expo Go. If you'd rather not leave Expo Go, use the WebView embed instead (see below).
+**Expo:** all three are on Expo's [supported-in-Expo Go](https://docs.expo.dev/versions/latest/sdk/third-party-overview/) list, so no development build is needed. This package itself is plain JavaScript — the native code is all theirs.
 
 ## Why you pass `chart` and `renderer`
 
@@ -124,7 +124,7 @@ A mismatched or missing `renderer` surfaces here too, as `Renderer '…' is not 
 
 ## The WebView alternative
 
-If you'd rather not add native modules — or you need to stay in Expo Go — the hosted graph works in a web view with no packages at all:
+If you'd rather not add a charting library at all, the hosted graph works in a web view:
 
 ```jsx
 import { WebView } from "react-native-webview";
