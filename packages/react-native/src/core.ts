@@ -2,7 +2,7 @@
  * Everything in the package that does not touch React Native: the payload
  * fetching, the header's numbers, the chart-option builder, and the types.
  *
- * Importable on its own as `terra-graphs-react-native/core` for two reasons.
+ * Importable on its own as `@tryterra/graphs-react-native/core` for two reasons.
  * It lets the test suite run these under plain Node — anything that reaches
  * `react-native` drags in Flow-typed source Node cannot parse — and it lets a
  * customer building their own chart surface reuse the fetching and the option

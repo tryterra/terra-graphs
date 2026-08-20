@@ -1,5 +1,5 @@
 /**
- * The package is standalone on purpose — it shares concepts with `terra-graphs`
+ * The package is standalone on purpose — it shares concepts with `@tryterra/graphs`
  * but no code, because importing that package registers a custom element and
  * pulls in `HTMLElement`. These few declarations are the price of that
  * independence.

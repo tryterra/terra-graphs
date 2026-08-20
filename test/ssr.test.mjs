@@ -8,17 +8,17 @@ import assert from "node:assert/strict";
 test("importing on the server does not touch the DOM", async () => {
   assert.equal(typeof globalThis.window, "undefined", "this test is only meaningful without a DOM");
 
-  const mod = await import("terra-graphs");
+  const mod = await import("@tryterra/graphs");
   assert.equal(typeof mod.defineTerraGraph, "function");
   assert.doesNotThrow(() => mod.defineTerraGraph(), "defineTerraGraph must no-op on the server");
 });
 
 test("the React wrapper imports on the server too", async () => {
-  const mod = await import("terra-graphs-react");
+  const mod = await import("@tryterra/graphs-react");
   assert.equal(typeof mod.TerraGraph, "function");
 });
 
 test("loading the renderer on the server rejects rather than throwing", async () => {
-  const { loadRenderer } = await import("terra-graphs");
+  const { loadRenderer } = await import("@tryterra/graphs");
   await assert.rejects(loadRenderer(), /browser/);
 });

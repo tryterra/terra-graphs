@@ -13,7 +13,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { headerStats } from "terra-graphs-react-native/core";
+import { headerStats } from "@tryterra/graphs-react-native/core";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const FIXTURES = path.join(ROOT, "packages", "react-native", "test", "fixtures");

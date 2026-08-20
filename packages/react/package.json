@@ -1,15 +1,25 @@
 {
-  "name": "terra-graphs-react",
+  "name": "@tryterra/graphs-react",
   "version": "1.0.0",
   "description": "React component for embedding Terra health graphs, without an iframe",
-  "keywords": ["terra", "health", "fitness", "wearables", "graphs", "charts", "react"],
+  "keywords": [
+    "terra",
+    "health",
+    "fitness",
+    "wearables",
+    "graphs",
+    "charts",
+    "react"
+  ],
   "homepage": "https://docs.tryterra.co/graphs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tryterra/terra-graphs.git",
     "directory": "packages/react"
   },
-  "bugs": { "url": "https://github.com/tryterra/terra-graphs/issues" },
+  "bugs": {
+    "url": "https://github.com/tryterra/terra-graphs/issues"
+  },
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -24,15 +34,21 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "terra-graphs": "^2.0.0"
+    "@tryterra/graphs": "^2.0.0"
   },
   "peerDependencies": {
     "react": ">=17"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

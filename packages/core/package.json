@@ -1,18 +1,31 @@
 {
-  "name": "terra-graphs",
+  "name": "@tryterra/graphs",
   "version": "2.0.0",
   "description": "Embed Terra health graphs in your app, without an iframe",
-  "keywords": ["terra", "health", "fitness", "wearables", "graphs", "charts", "web-component"],
+  "keywords": [
+    "terra",
+    "health",
+    "fitness",
+    "wearables",
+    "graphs",
+    "charts",
+    "web-component"
+  ],
   "homepage": "https://docs.tryterra.co/graphs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tryterra/terra-graphs.git",
     "directory": "packages/core"
   },
-  "bugs": { "url": "https://github.com/tryterra/terra-graphs/issues" },
+  "bugs": {
+    "url": "https://github.com/tryterra/terra-graphs/issues"
+  },
   "license": "MIT",
   "type": "module",
-  "sideEffects": ["./dist/index.js", "./dist/index.cjs"],
+  "sideEffects": [
+    "./dist/index.js",
+    "./dist/index.cjs"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,9 +37,15 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

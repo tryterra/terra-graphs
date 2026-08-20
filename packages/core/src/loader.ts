@@ -104,7 +104,7 @@ const loading = new Map<string, Promise<TerraGraphGlobal>>();
  */
 export function loadRenderer(baseUrl = DEFAULT_BASE_URL): Promise<TerraGraphGlobal> {
   if (typeof window === "undefined") {
-    return Promise.reject(new Error("terra-graphs: the renderer needs a browser"));
+    return Promise.reject(new Error("@tryterra/graphs: the renderer needs a browser"));
   }
   if (window.TerraGraph) return Promise.resolve(window.TerraGraph);
 
@@ -119,12 +119,12 @@ export function loadRenderer(baseUrl = DEFAULT_BASE_URL): Promise<TerraGraphGlob
     script.onload = () =>
       window.TerraGraph
         ? resolve(window.TerraGraph)
-        : reject(new Error(`terra-graphs: ${src} loaded but registered no renderer`));
+        : reject(new Error(`@tryterra/graphs: ${src} loaded but registered no renderer`));
     script.onerror = () => {
       // A failed load must not be cached, or a transient network error would
       // leave every later graph on the page permanently broken.
       loading.delete(src);
-      reject(new Error(`terra-graphs: could not load ${src}`));
+      reject(new Error(`@tryterra/graphs: could not load ${src}`));
     };
     document.head.appendChild(script);
   });

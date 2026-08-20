@@ -13,10 +13,10 @@ import {
   type GraphTheme,
   type IsoDate,
   type TerraGraphElement,
-} from "terra-graphs";
+} from "@tryterra/graphs";
 
 export type { GraphPayload, GraphTheme, IsoDate };
-export { TerraGraphError, graphUrl, toIsoDate } from "terra-graphs";
+export { TerraGraphError, graphUrl, toIsoDate } from "@tryterra/graphs";
 
 export interface TerraGraphProps {
   /** The graph to render, from the Graphs page of the Terra dashboard. */

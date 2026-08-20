@@ -9,8 +9,8 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { graphUrl } from "terra-graphs";
-import { payloadUrl } from "terra-graphs-react-native/core";
+import { graphUrl } from "@tryterra/graphs";
+import { payloadUrl } from "@tryterra/graphs-react-native/core";
 
 const CASES = [
   { sessionId: "s", userId: "u" },

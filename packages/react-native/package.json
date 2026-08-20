@@ -1,5 +1,5 @@
 {
-  "name": "terra-graphs-react-native",
+  "name": "@tryterra/graphs-react-native",
   "version": "0.1.0",
   "description": "Embed Terra health graphs in a React Native app, drawn natively",
   "keywords": [
@@ -66,5 +66,8 @@
     "react-native-svg": {
       "optional": true
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

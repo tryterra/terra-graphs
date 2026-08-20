@@ -3,7 +3,7 @@
  *
  * A custom element rather than a framework component because it is the one form
  * every framework can already consume: React, Vue, Svelte, Angular and plain
- * HTML all mount it the same way. `terra-graphs-react` wraps it for typed props
+ * HTML all mount it the same way. `@tryterra/graphs-react` wraps it for typed props
  * and callbacks; nothing else needs a wrapper.
  */
 import {
@@ -125,7 +125,7 @@ function buildElementClass(): CustomElementConstructor {
       const raw = this.getAttribute(name);
       if (raw == null || raw === "") return undefined;
       if (!ISO_DATE.test(raw)) {
-        throw new Error(`terra-graphs: ${name}="${raw}" is not a YYYY-MM-DD date`);
+        throw new Error(`@tryterra/graphs: ${name}="${raw}" is not a YYYY-MM-DD date`);
       }
       return raw as IsoDate;
     }
@@ -134,7 +134,7 @@ function buildElementClass(): CustomElementConstructor {
       const sessionId = this.getAttribute("session-id");
       const userId = this.getAttribute("user-id");
       if (!sessionId || !userId) {
-        this.#fail(new Error("terra-graphs: session-id and user-id are required"));
+        this.#fail(new Error("@tryterra/graphs: session-id and user-id are required"));
         return;
       }
 

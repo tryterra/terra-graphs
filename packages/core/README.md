@@ -1,16 +1,16 @@
-# terra-graphs
+# @tryterra/graphs
 
 Embed a Terra graph in your app — in your own DOM, not an iframe.
 
 You design the graph in the [Terra dashboard](https://dashboard.tryterra.co/dashboard/graphs): pick the metric, the chart type, the colours, the header stats. This package renders it, for one user, wherever you put it.
 
 ```bash
-npm install terra-graphs
+npm install @tryterra/graphs
 ```
 
 ```html
 <script type="module">
-  import "terra-graphs";
+  import "@tryterra/graphs";
 </script>
 
 <terra-graph
@@ -20,7 +20,7 @@ npm install terra-graphs
 ></terra-graph>
 ```
 
-Using React? Install [`terra-graphs-react`](https://www.npmjs.com/package/terra-graphs-react) instead.
+Using React? Install [`@tryterra/graphs-react`](https://www.npmjs.com/package/@tryterra/graphs-react) instead.
 
 ## Getting the two ids
 
@@ -94,7 +94,7 @@ vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === "terra-gr
 
 ```vue
 <script setup>
-import "terra-graphs";
+import "@tryterra/graphs";
 </script>
 
 <template>
@@ -106,7 +106,7 @@ import "terra-graphs";
 
 ```svelte
 <script>
-  import "terra-graphs";
+  import "@tryterra/graphs";
   export let sessionId, userId;
 </script>
 
@@ -116,7 +116,7 @@ import "terra-graphs";
 **Angular** — add `CUSTOM_ELEMENTS_SCHEMA` to the module or component:
 
 ```ts
-import "terra-graphs";
+import "@tryterra/graphs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 @Component({ schemas: [CUSTOM_ELEMENTS_SCHEMA], template: `
@@ -146,7 +146,7 @@ Importing this package on a server is a no-op: the element registers itself only
 If you would rather drive the chart yourself than use the element:
 
 ```js
-import { fetchPayload, loadRenderer, graphUrl } from "terra-graphs";
+import { fetchPayload, loadRenderer, graphUrl } from "@tryterra/graphs";
 
 const [renderer, payload] = await Promise.all([
   loadRenderer(),
@@ -172,7 +172,7 @@ document.querySelector("terra-graph").theme = { bg: "#0F172A", text: "#E2E8F0", 
 
 1.x exported a React component that rendered an iframe against the older token-based endpoint. 2.x has no iframe and no tokens:
 
-- `<TerraGraph type token />` becomes `<terra-graph session-id user-id>` — or the React component in `terra-graphs-react`.
+- `<TerraGraph type token />` becomes `<terra-graph session-id user-id>` — or the React component in `@tryterra/graphs-react`.
 - `type` (`DAILY_STEPS_SUMMARY` and friends) is gone. The graph and its metric are configured in the dashboard and referenced by `session-id`.
 - `token` is gone. Nothing is minted per render; `user-id` names the user directly.
 - `startDate` / `endDate` / `timePeriod` become `from` / `to` / `timeframe`.

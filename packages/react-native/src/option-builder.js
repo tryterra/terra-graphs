@@ -24,7 +24,7 @@ export function buildChartOption(payload, env) {
   // supplies the instance rather than this module importing a second copy.
   var echarts = env.echarts;
   {
-    // a pure function of (payload, theme). terra-graphs-react-native extracts it
+    // a pure function of (payload, theme). @tryterra/graphs-react-native extracts it
     // verbatim to draw the same charts without a DOM (see that package's
     // scripts/extract-option-builder.mjs). Keep it DOM-free: a `document` or
     // `window` reference here silently breaks the native renderer, and its

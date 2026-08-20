@@ -1,15 +1,15 @@
-# terra-graphs-react
+# @tryterra/graphs-react
 
 Embed a Terra graph in a React app — in your own DOM, not an iframe.
 
 You design the graph in the [Terra dashboard](https://dashboard.tryterra.co/dashboard/graphs): pick the metric, the chart type, the colours, the header stats. This component renders it, for one user, wherever you put it.
 
 ```bash
-npm install terra-graphs-react
+npm install @tryterra/graphs-react
 ```
 
 ```jsx
-import { TerraGraph } from "terra-graphs-react";
+import { TerraGraph } from "@tryterra/graphs-react";
 
 export function SleepCard({ userId }) {
   return (
@@ -112,7 +112,7 @@ The font entries are only needed if you keep Terra's typeface. Graphs render fin
 
 ## Not using React?
 
-[`terra-graphs`](https://www.npmjs.com/package/terra-graphs) ships the same graph as a `<terra-graph>` custom element, with notes for Vue, Svelte, Angular and plain HTML.
+[`@tryterra/graphs`](https://www.npmjs.com/package/@tryterra/graphs) ships the same graph as a `<terra-graph>` custom element, with notes for Vue, Svelte, Angular and plain HTML.
 
 ## Docs
 

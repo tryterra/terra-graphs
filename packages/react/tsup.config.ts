@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   clean: true,
   target: "es2020",
-  external: ["react", "terra-graphs"],
+  external: ["react", "@tryterra/graphs"],
 });

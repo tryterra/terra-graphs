@@ -120,10 +120,10 @@ const { server, base } = await startApi();
 const fixture = await esbuild.build({
   stdin: {
     contents: `
-      import "terra-graphs";
+      import "@tryterra/graphs";
       import * as React from "react";
       import * as ReactDOM from "react-dom/client";
-      import { TerraGraph } from "terra-graphs-react";
+      import { TerraGraph } from "@tryterra/graphs-react";
       window.__fixture = { React, ReactDOM, TerraGraph };
     `,
     resolveDir: ROOT,

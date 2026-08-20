@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { toIsoDate } from "terra-graphs";
+import { toIsoDate } from "@tryterra/graphs";
 
 // The whole reason `from`/`to` are strings rather than `Date`s: the obvious
 // conversion silently shifts the day for most of the world. A date picker hands
@@ -24,7 +24,7 @@ test("toIsoDate zero-pads single-digit months and days", () => {
 });
 
 test("toIsoDate round-trips through graphUrl", async () => {
-  const { graphUrl } = await import("terra-graphs");
+  const { graphUrl } = await import("@tryterra/graphs");
   const url = graphUrl({ sessionId: "s", userId: "u", from: toIsoDate(new Date(2026, 7, 1)) });
   assert.ok(url.includes("from=2026-08-01"), url);
 });

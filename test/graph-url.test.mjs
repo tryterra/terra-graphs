@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DEFAULT_BASE_URL, graphUrl } from "terra-graphs";
+import { DEFAULT_BASE_URL, graphUrl } from "@tryterra/graphs";
 
 const parse = (url) => {
   const u = new URL(url);

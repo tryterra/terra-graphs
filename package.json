@@ -1,5 +1,5 @@
 {
-  "name": "terra-graphs-workspace",
+  "name": "@tryterra/graphs-workspace",
   "private": true,
   "description": "Embed Terra health graphs in your app",
   "repository": {

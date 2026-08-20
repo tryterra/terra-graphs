@@ -6,7 +6,7 @@ name: Release package
 # Requires a Trusted Publisher registered on npmjs.com for EACH package, all
 # pointing at org `tryterra`, repo `terra-graphs`, workflow
 # `release_package.yml`:
-#     terra-graphs · terra-graphs-react · terra-graphs-react-native
+#     @tryterra/graphs · @tryterra/graphs-react · @tryterra/graphs-react-native
 # Without it npm answers 404 on PUT, which reads as "no such package" but means
 # "this workflow may not publish it".
 
@@ -18,9 +18,9 @@ on:
         required: true
         type: choice
         options:
-          - terra-graphs
-          - terra-graphs-react
-          - terra-graphs-react-native
+          - @tryterra/graphs
+          - @tryterra/graphs-react
+          - @tryterra/graphs-react-native
       release-type:
         description: "as-is (publish the version in package.json) | patch | minor | major | prepatch | preminor | premajor | prerelease"
         required: true
@@ -61,9 +61,9 @@ jobs:
         id: pkg
         run: |
           case "${{ inputs.package }}" in
-            terra-graphs)       echo "dir=packages/core"  >> "$GITHUB_OUTPUT" ;;
-            terra-graphs-react) echo "dir=packages/react" >> "$GITHUB_OUTPUT" ;;
-            terra-graphs-react-native) echo "dir=packages/react-native" >> "$GITHUB_OUTPUT" ;;
+            @tryterra/graphs)       echo "dir=packages/core"  >> "$GITHUB_OUTPUT" ;;
+            @tryterra/graphs-react) echo "dir=packages/react" >> "$GITHUB_OUTPUT" ;;
+            @tryterra/graphs-react-native) echo "dir=packages/react-native" >> "$GITHUB_OUTPUT" ;;
             *) echo "unknown package ${{ inputs.package }}" >&2; exit 1 ;;
           esac
 
@@ -89,7 +89,9 @@ jobs:
             echo "RELEASE_TAG=latest" >> "$GITHUB_ENV"
           fi
           echo "NEW_VERSION=${NEW_VERSION}" >> "$GITHUB_ENV"
-          echo "TAG=${{ inputs.package }}@${NEW_VERSION#v}" >> "$GITHUB_ENV"
+          # Tag without the scope: "@tryterra/graphs@2.0.0" would nest the ref
+          # under refs/tags/@tryterra/. Flat and readable: graphs@2.0.0.
+          echo "TAG=${{ inputs.package }}@${NEW_VERSION#v}" | sed 's|@tryterra/||' >> "$GITHUB_ENV"
 
       - name: Update changelog
         uses: superfaceai/release-changelog-action@v2

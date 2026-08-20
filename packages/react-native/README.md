@@ -1,15 +1,15 @@
-# terra-graphs-react-native
+# @tryterra/graphs-react-native
 
 Embed a Terra graph in a React Native app, drawn natively — no WebView.
 
 You design the graph in the [Terra dashboard](https://dashboard.tryterra.co/dashboard/graphs): pick the metric, the chart type, the colours, the header stats. This component renders it, for one user, as native views.
 
 ```bash
-npm install terra-graphs-react-native @wuba/react-native-echarts @shopify/react-native-skia react-native-gesture-handler
+npm install @tryterra/graphs-react-native @wuba/react-native-echarts @shopify/react-native-skia react-native-gesture-handler
 ```
 
 ```jsx
-import { TerraGraph } from "terra-graphs-react-native";
+import { TerraGraph } from "@tryterra/graphs-react-native";
 import SkiaChart, { SkiaRenderer } from "@wuba/react-native-echarts/skiaChart";
 
 <TerraGraph
@@ -65,7 +65,7 @@ If the component imported them itself, every app would carry Skia *and* react-na
 That is deliberate. A graph window is a run of calendar days; a `Date` is an instant. Converting one to the other means picking a timezone, and the obvious conversion is wrong — a date picker hands you `new Date(2026, 7, 1)` for "1 August", and `.toISOString().slice(0, 10)` turns that into `2026-07-31` anywhere east of Greenwich. If you have a `Date`, convert it explicitly:
 
 ```jsx
-import { toIsoDate } from "terra-graphs-react-native";
+import { toIsoDate } from "@tryterra/graphs-react-native";
 
 <TerraGraph
   sessionId={s}
@@ -146,11 +146,11 @@ That keeps the *drawing* in step. It does not make this package self-updating: u
 ## Using the pieces without the component
 
 Everything that isn't a React Native view is also published as
-`terra-graphs-react-native/core` — the payload fetching, the header's numbers
+`@tryterra/graphs-react-native/core` — the payload fetching, the header's numbers
 and the chart-option builder — for building your own chart surface:
 
 ```js
-import { fetchPayload, buildChartOption } from "terra-graphs-react-native/core";
+import { fetchPayload, buildChartOption } from "@tryterra/graphs-react-native/core";
 
 const payload = await fetchPayload({ sessionId, userId, timeframe: 30 });
 const option = buildChartOption(payload, { echarts });

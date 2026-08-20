@@ -1,12 +1,12 @@
-# terra-graphs
+# @tryterra/graphs
 
 Embed Terra health graphs in your app, without an iframe.
 
 | Package | Install | For |
 | --- | --- | --- |
-| [`terra-graphs`](packages/core) | `npm i terra-graphs` | Any framework, via the `<terra-graph>` custom element |
-| [`terra-graphs-react`](packages/react) | `npm i terra-graphs-react` | React, with typed props and callbacks |
-| [`terra-graphs-react-native`](packages/react-native) | `npm i terra-graphs-react-native` | React Native, drawn natively (no WebView) |
+| [`@tryterra/graphs`](packages/core) | `npm i @tryterra/graphs` | Any framework, via the `<terra-graph>` custom element |
+| [`@tryterra/graphs-react`](packages/react) | `npm i @tryterra/graphs-react` | React, with typed props and callbacks |
+| [`@tryterra/graphs-react-native`](packages/react-native) | `npm i @tryterra/graphs-react-native` | React Native, drawn natively (no WebView) |
 
 Graphs are designed in the [Terra dashboard](https://dashboard.tryterra.co/dashboard/graphs) — metric, chart type, colours, header stats — and referenced here by id. Full guide: [docs.tryterra.co/graphs](https://docs.tryterra.co/graphs).
 
