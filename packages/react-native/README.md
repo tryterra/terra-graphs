@@ -5,41 +5,73 @@ Embed a Terra graph in a React Native app, drawn natively — no WebView.
 You design the graph in the [Terra dashboard](https://dashboard.tryterra.co/dashboard/graphs): pick the metric, the chart type, the colours, the header stats. This component renders it, for one user, as native views.
 
 ```bash
-npm install @tryterra/graphs-react-native @wuba/react-native-echarts @shopify/react-native-skia react-native-gesture-handler
+npm install @tryterra/graphs-react-native
 ```
 
 ```jsx
 import { TerraGraph } from "@tryterra/graphs-react-native";
-import SkiaChart, { SkiaRenderer } from "@wuba/react-native-echarts/skiaChart";
 
 <TerraGraph
   sessionId="a1b2c3d4-0000-0000-0000-000000000000"
   userId={terraUserId}
   timeframe={30}
-  chart={SkiaChart}
-  renderer={SkiaRenderer}
   height={240}
 />;
 ```
 
-**Expo:** all three are on Expo's [supported-in-Expo Go](https://docs.expo.dev/versions/latest/sdk/third-party-overview/) list, so no development build is needed. This package itself is plain JavaScript — the native code is all theirs.
+That is the whole setup. No Metro config, no `overrides` entry, no chart engine to
+install or wire up.
 
-## Why you pass `chart` and `renderer`
+`react-native-svg` is the one thing this needs that it cannot bundle — it is a
+native module, and React Native has no drawing surface of its own. It is declared
+as a peer, so npm installs it for you.
 
-The painter is yours to choose, and you import both halves of it so your app links only the native module it actually uses. They always come as a pair from the same entry point:
+**Expo:** run `npx expo install react-native-svg` once afterwards. npm resolves the
+newest release; `expo install` pins the one matching your SDK. Both are in Expo Go,
+so no development build is needed.
 
-| Painter | Install | Import |
-| --- | --- | --- |
-| **Skia** (recommended) | `@shopify/react-native-skia` | `SkiaChart, { SkiaRenderer }` from `@wuba/react-native-echarts/skiaChart` |
-| **SVG** | `react-native-svg` | `SvgChart, { SVGRenderer }` from `@wuba/react-native-echarts/svgChart` |
+## Using Skia instead
 
-```jsx
-import SvgChart, { SVGRenderer } from "@wuba/react-native-echarts/svgChart";
+Skia paints faster on very dense charts. It costs two extra native modules —
+`react-native-reanimated` and `react-native-worklets`, which Skia peer-requires and
+throws without — so it is opt-in rather than the default:
 
-<TerraGraph sessionId={s} userId={u} chart={SvgChart} renderer={SVGRenderer} />;
+```bash
+npm install @tryterra/graphs-react-native @shopify/react-native-skia react-native-reanimated
 ```
 
-If the component imported them itself, every app would carry Skia *and* react-native-svg. Both are needed because ECharts draws through a painter the renderer registers, and the chart view is what it paints into — passing one without the other leaves nothing to draw with.
+```jsx
+import { TerraGraph } from "@tryterra/graphs-react-native/skia";
+```
+
+Same component, same props. The chart engine sits in a shared chunk, so importing
+both entries costs one engine and two painters — not two of each.
+
+## Why the chart engine is bundled
+
+Unusually for a React Native library, this package ships ECharts, zrender and the
+painter *inside* `dist/` instead of listing them as dependencies. Two reasons,
+both of which cost users a broken app otherwise:
+
+- **tslib.** Every ECharts and zrender release, up to and including 6.1.0, pins
+  `tslib` to exactly 2.3.0. That version's `exports` map resolves to an ES module
+  which Metro then hands to a CommonJS `require`, so the app bundles cleanly and
+  crashes on launch with `Cannot read property '__extends' of undefined`. Bundling
+  resolves tslib at *our* build time, on Node, where the interop is correct.
+- **One zrender.** The painter registers itself into zrender's module-level
+  instance registry. If the copy it registers into is not the copy ECharts draws
+  through, `init` succeeds, `setOption` succeeds, and the chart renders blank with
+  no error at all. Shipping one bundle makes that failure impossible rather than
+  merely unlikely.
+
+The trade is about 271 KB gzipped in your app bundle for the default entry, or
+241 KB for the Skia one (measured minified + gzipped, as a release build ships
+them). That is roughly what these libraries would have cost as ordinary
+dependencies, since it is the same code. If your app
+*already* uses ECharts directly you will now carry two copies; tell us and we will
+add a build that externalises it.
+
+Licences for the bundled code are in [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md).
 
 ## Props
 
@@ -47,8 +79,6 @@ If the component imported them itself, every app would carry Skia *and* react-na
 | --- | --- | --- |
 | `sessionId` | `string` | **Required.** The graph, from the dashboard. |
 | `userId` | `string` | **Required.** The Terra user to render, or `"example"`. |
-| `chart` | component | **Required.** `SkiaChart` or `SvgChart` (above). |
-| `renderer` | — | **Required.** The matching `SkiaRenderer` or `SVGRenderer`. |
 | `timeframe` | `number` | Days back from today, including today. Defaults to 7. |
 | `from`, `to` | `IsoDate` | `YYYY-MM-DD` (UTC). `to` is inclusive. |
 | `baseUrl` | `string` | Graph API base. Defaults to `https://api.tryterra.co/v2`. |
@@ -70,8 +100,6 @@ import { toIsoDate } from "@tryterra/graphs-react-native";
 <TerraGraph
   sessionId={s}
   userId={u}
-  chart={SkiaChart}
-  renderer={SkiaRenderer}
   from={toIsoDate(picked)}
   to={toIsoDate(until)}
 />;
@@ -98,8 +126,6 @@ const scheme = useColorScheme();
 <TerraGraph
   sessionId={s}
   userId={u}
-  chart={SkiaChart}
-  renderer={SkiaRenderer}
   theme={scheme === "dark" ? { bg: "#0F172A", text: "#E2E8F0", line: "#38BDF8" } : undefined}
 />;
 ```
@@ -114,13 +140,9 @@ Give colours as hex (`#38BDF8`, `#3BF`) or `rgb()`/`rgba()`. Named colours and `
 <TerraGraph
   sessionId={s}
   userId={u}
-  chart={SkiaChart}
-  renderer={SkiaRenderer}
   onError={(error) => reportToSentry(error, { traceId: error.traceId })}
 />
 ```
-
-A mismatched or missing `renderer` surfaces here too, as `Renderer '…' is not imported` — the most common setup mistake, reported through the card rather than as an unhandled exception.
 
 ## The WebView alternative
 
@@ -153,8 +175,11 @@ and the chart-option builder — for building your own chart surface:
 import { fetchPayload, buildChartOption } from "@tryterra/graphs-react-native/core";
 
 const payload = await fetchPayload({ sessionId, userId, timeframe: 30 });
-const option = buildChartOption(payload, { echarts });
+const option = buildChartOption(payload, { echarts }); // your own echarts instance
 ```
+
+`core` deliberately holds no chart engine, so it stays small and runs under plain
+Node. Pass in whichever `echarts` you are driving.
 
 ## Docs
 

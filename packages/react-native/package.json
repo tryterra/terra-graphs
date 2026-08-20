@@ -24,50 +24,51 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "default": "./dist/index.js"
     },
-    "./package.json": "./package.json",
+    "./skia": {
+      "types": "./dist/skia.d.ts",
+      "default": "./dist/skia.js"
+    },
     "./core": {
       "types": "./dist/core.d.ts",
-      "import": "./dist/core.js",
-      "require": "./dist/core.cjs"
-    }
+      "default": "./dist/core.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "THIRD-PARTY-NOTICES.md"
   ],
   "scripts": {
     "extract": "node scripts/extract-option-builder.mjs",
     "build": "tsup",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "echarts": "5.5.1"
-  },
   "peerDependencies": {
     "@shopify/react-native-skia": "*",
-    "@wuba/react-native-echarts": ">=3",
     "react": ">=17",
     "react-native": ">=0.70",
-    "react-native-svg": "*"
+    "react-native-svg": ">=13"
   },
   "peerDependenciesMeta": {
     "@shopify/react-native-skia": {
-      "optional": true
-    },
-    "react-native-svg": {
       "optional": true
     }
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@wuba/react-native-echarts": "3.1.1",
+    "echarts": "5.5.1",
+    "zrender": "5.6.0"
   }
 }

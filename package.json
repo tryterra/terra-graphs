@@ -41,5 +41,8 @@
   "allowScripts": {
     "esbuild@0.27.7": true,
     "esbuild@0.28.2": true
+  },
+  "overrides": {
+    "zrender": "5.6.0"
   }
 }
