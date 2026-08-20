@@ -31,6 +31,7 @@ import {
 } from "echarts/components";
 
 import { buildChartOption } from "./option-builder.js";
+import { plainTextTooltips } from "./tooltip";
 import { Header } from "./Header";
 import { SleepStages } from "./SleepStages";
 import { fetchPayload, type GraphSource } from "./payload";
@@ -199,7 +200,9 @@ export function TerraGraph({
         height,
       } as never);
       instance.setOption(
-        buildChartOption(payload, { echarts, theme: themeRef.current, fontFamily: "System" }),
+        plainTextTooltips(
+          buildChartOption(payload, { echarts, theme: themeRef.current, fontFamily: "System" }),
+        ),
         {
           notMerge: true,
         },
@@ -244,9 +247,15 @@ export function TerraGraph({
     <View style={[styles.card, { backgroundColor: background }, style]} onLayout={onLayout}>
       <Header payload={payload} theme={theme} />
       {/* Only the Skia view takes width/height props; the SVG one reads them
-          from the init options and its own style, so pass both. */}
+          from the init options and its own style, so pass both.
+
+          Deliberately not `useRNGH`: that switches the chart's touch handling to
+          react-native-gesture-handler, which then requires the whole app to sit
+          inside a GestureHandlerRootView and throws if it doesn't. The default
+          PanResponder path needs no such setup and drives tooltips fine, including
+          inside a ScrollView. */}
       {width > 0 && (
-        <ChartView ref={chartRef as never} useRNGH style={{ width, height }} width={width} height={height} />
+        <ChartView ref={chartRef as never} style={{ width, height }} width={width} height={height} />
       )}
       {payload.kind === "sleep" && <SleepStages payload={payload} theme={theme} />}
     </View>

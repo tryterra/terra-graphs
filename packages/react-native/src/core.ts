@@ -12,3 +12,4 @@ export { DEFAULT_BASE_URL, fetchPayload, payloadUrl, type GraphSource } from "./
 export { formatDuration, headerStats, statFmt, type StatColumn } from "./stats";
 export { TerraGraphError, toIsoDate, type GraphPayload, type GraphTheme, type IsoDate } from "./types";
 export { buildChartOption } from "./option-builder.js";
+export { plainTextTooltips, toPlainText } from "./tooltip";
