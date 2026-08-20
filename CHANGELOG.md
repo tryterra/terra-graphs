@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## graphs-react-native 1.0.0 - 2026-08-20
+### Changed
+- **Breaking.** The painter is chosen by which entry you import, not by props: `@tryterra/graphs-react-native` draws with `react-native-svg`, `@tryterra/graphs-react-native/skia` with Skia. The `chart` and `renderer` props are gone.
+- The chart engine ships inside the package. `npm install @tryterra/graphs-react-native` is now the whole setup — no `package.json` overrides, no `metro.config.js`, and no ECharts to install. `react-native-svg` is a required peer, so npm brings it along.
+
+### Fixed
+- The component could not be installed at all. ECharts pins `tslib` to a version Metro resolves to the wrong module format, so an app bundled cleanly and then crashed on launch with `Cannot read property '__extends' of undefined`. The documented `overrides` workaround was npm-only — pnpm ignored it and yarn wanted `resolutions`.
+- Charts could render blank with no error, when the app's `zrender` was a different copy from the one ECharts drew through. Bundling makes one copy structural.
+- The chart no longer requires `react-native-gesture-handler`, which threw unless the whole app sat inside a `GestureHandlerRootView`.
+- Tooltips showed raw HTML (`;font-size:11px'>Aug 8</div>`) instead of their text.
+
 ## 2.0.0 - 2026-08-19
 ### Added
 - `@tryterra/graphs-react-native` — a `<TerraGraph />` that draws natively via `@wuba/react-native-echarts`, with no WebView. Its ECharts option building is generated verbatim from the web renderer, so the chart is the same one; the header, stats and sleep breakdown are native views.

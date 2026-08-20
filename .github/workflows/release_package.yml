@@ -17,10 +17,13 @@ on:
         description: Package to release
         required: true
         type: choice
+        # Quoted: "@" is a reserved indicator in YAML and cannot open a plain
+        # scalar, so the unquoted scoped names made the whole file unparseable
+        # and GitHub refused to run it.
         options:
-          - @tryterra/graphs
-          - @tryterra/graphs-react
-          - @tryterra/graphs-react-native
+          - "@tryterra/graphs"
+          - "@tryterra/graphs-react"
+          - "@tryterra/graphs-react-native"
       release-type:
         description: "as-is (publish the version in package.json) | patch | minor | major | prepatch | preminor | premajor | prerelease"
         required: true
@@ -93,6 +96,20 @@ jobs:
           # under refs/tags/@tryterra/. Flat and readable: graphs@2.0.0.
           echo "TAG=${{ inputs.package }}@${NEW_VERSION#v}" | sed 's|@tryterra/||' >> "$GITHUB_ENV"
 
+      # Everything that can be checked before the irreversible step, is. Publish
+      # cannot be undone; a tag collision found afterwards leaves the registry
+      # and the repo disagreeing, with no way back.
+      - name: Pre-flight
+        run: |
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            echo "::error::Tag ${TAG} already exists. That version was released; pick a different release-type." >&2
+            exit 1
+          fi
+          if npm view "${{ inputs.package }}@${NEW_VERSION#v}" version >/dev/null 2>&1; then
+            echo "::error::${{ inputs.package }}@${NEW_VERSION#v} is already on npm. Versions are immutable; bump instead." >&2
+            exit 1
+          fi
+
       - name: Update changelog
         uses: superfaceai/release-changelog-action@v2
         with:
@@ -105,7 +122,13 @@ jobs:
       # No token: the credential is minted from the id-token permission above.
       - name: Publish
         working-directory: ${{ steps.pkg.outputs.dir }}
-        run: npm publish --access public --tag "${RELEASE_TAG}"
+        run: |
+          if ! npm publish --access public --tag "${RELEASE_TAG}" 2>&1 | tee /tmp/publish.log; then
+            if grep -q "404" /tmp/publish.log; then
+              echo "::error::npm answered 404. For a package that exists, this means this workflow is not a registered Trusted Publisher for ${{ inputs.package }} — not that the package is missing. Register it at https://www.npmjs.com/package/${{ inputs.package }}/access (org tryterra, repo terra-graphs, workflow release_package.yml)." >&2
+            fi
+            exit 1
+          fi
 
       - name: Commit and tag
         run: |
