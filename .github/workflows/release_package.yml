@@ -25,9 +25,9 @@ on:
           - "@tryterra/graphs-react"
           - "@tryterra/graphs-react-native"
       release-type:
-        description: "as-is (publish the version in package.json) | patch | minor | major | prepatch | preminor | premajor | prerelease"
+        description: "as-is publishes the version already on main — the normal path, since main is protected and a bump cannot be pushed back. patch | minor | major | prerelease publish a version that will exist only on the runner."
         required: true
-        default: patch
+        default: as-is
 
 jobs:
   release:
@@ -35,7 +35,7 @@ jobs:
     permissions:
       # Mint the OIDC token npm exchanges for a short-lived publish credential.
       id-token: write
-      # The release commit and tag are pushed from here.
+      # Pushing the release tag. The branch is protected and never written to.
       contents: write
     steps:
       - uses: actions/checkout@v4
@@ -130,14 +130,23 @@ jobs:
             exit 1
           fi
 
-      - name: Commit and tag
+      # main is protected and Actions cannot be granted a bypass, so this job
+      # never writes to the branch — only the tag, which a branch ruleset does
+      # not govern. The version bump therefore has to be on main *before* the
+      # release runs, which is what `as-is` is for: land the bump in a reviewed
+      # PR, then release exactly what was reviewed.
+      - name: Tag
         run: |
-          git add CHANGELOG.md "${{ steps.pkg.outputs.dir }}/package.json" package-lock.json
-          # An as-is release bumps nothing, so there may be nothing staged —
-          # that must not abort the tag.
-          git diff --cached --quiet || git commit -m "chore: release ${{ env.TAG }}"
           git tag "${{ env.TAG }}"
-          git push origin HEAD --tags
+          git push origin "refs/tags/${{ env.TAG }}"
+
+      # A bump release-type computes a version that only ever existed on the
+      # runner: the package is published and tagged, but main still says the old
+      # number. Say so loudly rather than leaving someone to find it later.
+      - name: Warn that main is behind
+        if: inputs.release-type != 'as-is'
+        run: |
+          echo "::warning::Published ${{ env.TAG }}, but the version bump exists only on this runner — main is protected and this job cannot push to it. Raise a PR setting ${{ steps.pkg.outputs.dir }}/package.json to ${NEW_VERSION#v} and updating CHANGELOG.md. Prefer 'as-is': bump in a PR first, then release what was reviewed."
 
       - id: changelog
         uses: superfaceai/release-changelog-action@v2
