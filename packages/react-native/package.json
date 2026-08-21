@@ -44,13 +44,15 @@
   },
   "files": [
     "dist",
+    "!dist/metafile-*.json",
     "README.md",
     "THIRD-PARTY-NOTICES.md"
   ],
   "scripts": {
     "extract": "node scripts/extract-option-builder.mjs",
     "build": "tsup",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "notices": "node scripts/generate-notices.mjs"
   },
   "peerDependencies": {
     "@shopify/react-native-skia": "*",

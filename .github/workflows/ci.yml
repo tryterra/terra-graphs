@@ -18,6 +18,13 @@ jobs:
       - run: npm run typecheck
       - run: npm test
 
+      # We redistribute the chart engine inside dist/, so the notices are part
+      # of the artifact. Derived from the build's own module list, which is how
+      # a new transitive dependency gets noticed — an omission here is a licence
+      # problem, not a docs one. Offline: reads node_modules, not the network.
+      - name: Third-party notices are current
+        run: npm run notices --workspace packages/react-native -- --check
+
       # The end-to-end run drives a real browser against the deployed Graph
       # API, so it fails on a network blip rather than a code change. Kept
       # non-blocking; run it locally when touching the element or the wrapper.
