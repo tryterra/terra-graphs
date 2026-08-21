@@ -10,6 +10,10 @@ export default defineConfig({
   dts: true,
   clean: true,
   target: "es2020",
+  // Lists every module that ended up in the bundle. `npm run notices` reads it
+  // so the licence file is derived from what we actually redistribute, rather
+  // than from a list someone has to remember to update.
+  metafile: true,
   // The chart engine ships *inside* this package. Bundling it is load-bearing,
   // not a size preference — see the comment at the top of src/index.tsx. The
   // short version: it is the only way to get correct tslib interop under Metro

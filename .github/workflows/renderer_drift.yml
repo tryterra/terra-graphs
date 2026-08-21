@@ -1,0 +1,82 @@
+name: Renderer drift
+
+# The React Native package does not reimplement the chart: its
+# `src/option-builder.js` is copied verbatim out of the web renderer that Terra
+# serves, by `npm run extract`. Nothing stops the web renderer changing
+# afterwards, and when it does the native package quietly keeps drawing the old
+# chart — same graph, different code, no error anywhere.
+#
+# The two tests that would catch this skip in CI, because they want a terra-v6
+# checkout beside the repo. This does not: it re-extracts from the deployed
+# renderer and fails if the result differs from what is committed.
+#
+# Scheduled rather than per-PR, because it depends on production being
+# reachable, and a network blip must not block an unrelated pull request.
+
+on:
+  schedule:
+    # Weekday mornings, UTC. Drift is not urgent enough to page anyone; it is
+    # only bad if it goes unnoticed for a release.
+    - cron: "0 7 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # An issue is the point of this job. A red scheduled run notifies nobody.
+  issues: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+
+      - name: Re-extract from the deployed renderer
+        id: extract
+        working-directory: packages/react-native
+        run: npm run extract
+
+      - name: Compare with what we ship
+        id: diff
+        run: |
+          if git diff --quiet -- packages/react-native/src/option-builder.js; then
+            echo "drifted=false" >> "$GITHUB_OUTPUT"
+            echo "The bundled chart code matches the deployed renderer."
+          else
+            echo "drifted=true" >> "$GITHUB_OUTPUT"
+            {
+              echo 'diff<<DIFF_EOF'
+              git diff --unified=3 -- packages/react-native/src/option-builder.js | head -c 55000
+              echo
+              echo 'DIFF_EOF'
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Report
+        if: steps.diff.outputs.drifted == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIFF: ${{ steps.diff.outputs.diff }}
+        run: |
+          TITLE="Renderer drift: the React Native chart code is behind the deployed renderer"
+          # One open issue, updated — not a new one every weekday morning.
+          EXISTING=$(gh issue list --state open --search "in:title \"Renderer drift\"" --json number --jq '.[0].number // empty')
+          BODY=$(printf '%s\n\n```diff\n%s\n```\n\n%s\n' \
+            "\`npm run extract\` against the deployed renderer no longer reproduces the committed \`packages/react-native/src/option-builder.js\`, so the published React Native package is drawing a different chart from the web." \
+            "$DIFF" \
+            "To resolve: run \`npm run extract\` in \`packages/react-native\`, review the diff, run \`npm test\`, and release. Run [$GITHUB_RUN_ID]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID).")
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: Fail on drift
+        if: steps.diff.outputs.drifted == 'true'
+        run: |
+          echo "::error::The React Native package's chart code no longer matches the deployed renderer. See the issue this run opened." >&2
+          exit 1
